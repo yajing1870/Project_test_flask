@@ -1,0 +1,22 @@
+# 敏感配置（千万别上传！）
+.env
+config.py
+secrets.py
+
+# Python 虚拟环境
+.venv/
+venv/
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE 配置
+.vscode/
+.idea/
+*.iml
+
+# 操作系统垃圾
+.DS_Store
+Thumbs.db
