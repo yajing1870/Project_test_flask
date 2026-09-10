@@ -1,0 +1,14 @@
+#test_data.yaml
+test_book:
+  - title: "测试书1"
+    author: "测试作者1"
+    stock: 10
+    price: 99.00
+  - title: "测试书2"
+    author: "测试作者2"
+    stock: 79
+    price: 66.99
+
+# - 是列表
+#： 是字典
+#注意：冒号后面要有一个空格

@@ -17,6 +17,13 @@ __pycache__/
 .idea/
 *.iml
 
+# 测试报告
+temps/
+report/
+*.html
+
+
+
 # 操作系统垃圾
 .DS_Store
 Thumbs.db

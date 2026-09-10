@@ -2,10 +2,14 @@ import pytest
 import requests
 import os
 import pymysql
+import yaml
 from dotenv import load_dotenv
 # 基础 URL，方便切换环境
 BASE_URL = "http://127.0.0.1:5000"
 
+def load_test_data():
+    with open("test_data.yaml","r",encoding="UTF-8")as f:
+        return yaml.safe_load(f)
 
 @pytest.fixture(scope="session")
 def api_url():
@@ -17,7 +21,6 @@ def api_url():
 def clean_books():
     """
     每个测试函数执行前，清空数据并插入干净的测试数据
-    scope="function" 表示每个测试函数都会执行一次
     """
 
     # 数据库配置
@@ -31,6 +34,8 @@ def clean_books():
         'db': os.getenv('DB_NAME', 'book_db')
     }
 
+    data=load_test_data()#获取测试数据
+
     # 连接数据库
     conn=pymysql.connect(**db_config)
     cursor = conn.cursor()
@@ -39,15 +44,12 @@ def clean_books():
     cursor.execute("DELETE FROM books")
     # 重置自增 ID
     cursor.execute("ALTER TABLE books AUTO_INCREMENT = 1")
-    # 插入两条测试数据
-    cursor.execute(
-        "INSERT INTO books (title, author,stock,price) VALUES (%s, %s, %s, %s)",
-        ('测试书1', '测试作者1',10,30.00)
-    )
-    cursor.execute(
-        "INSERT INTO books (title, author,stock,price) VALUES (%s, %s, %s, %s)",
-        ('测试书2', '测试作者2',20,45.00)
-    )
+    # 插入yaml两条测试数据
+    for book in data["test_book"]:
+        cursor.execute(
+            "insert into books (title,author,stock,price) values (%s,%s,%s,%s)",
+            (book["title"],book["author"],book["stock"],book["price"])
+        )
 
     conn.commit()
     cursor.close()

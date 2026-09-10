@@ -18,6 +18,7 @@
 
 \- Allure
 
+\- Yaml
 
 
 \## 项目结构
@@ -40,13 +41,9 @@ Project\_test\_flask/
 
 ├── pytest.ini # pytest 配置文件
 
+├── test_data.yaml #测试数据
+
 └── .env # 环境变量配置
-
-
-
-
-
-\## 环境配置
 
 
 
