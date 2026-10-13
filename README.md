@@ -5,7 +5,7 @@
 \## 项目简介
 
 这是一个基于 Flask 框架的 CRUD（增删改查）接口测试项目，使用 Pytest + Allure 生成自动化测试报告。
-
+增添了ai生成测试用例，用Github Actions进行自动测试
 
 
 \## 技术栈
@@ -20,28 +20,44 @@
 
 \- Yaml
 
+\- OpenAI
 
 \## 项目结构
 
 Project\_test\_flask/
 
+├──.github/
+
+│ ├──workflows/
+
+│ └── test.yaml #Github Actions自动流程
+
 ├── tests/ # 测试用例目录
+
+│ ├──__init__.py
 
 │ ├── conftest.py # pytest fixtures 配置
 
-│ └── test\_books.py # 图书相关测试用例
+│ ├──api_client.py #封装CRUD、断言、日志、重试、requests
 
-├── temps/ # 测试结果临时数据（Allure 源数据）
+│ ├──test_ai_case.py #对ai生成用例进行测试
 
-├── report/ # Allure 测试报告
+│ └── test_books.py # 图书相关测试用例
 
-├── library\_app.py # Flask 应用主文件
+
+├── library_app.py # Flask 应用主文件
 
 ├── main.py # 项目入口
 
 ├── pytest.ini # pytest 配置文件
 
-├── test_data.yaml #测试数据
+├──data/ # 存储数据
+
+│ ├── test_data.yaml #测试数据
+
+│ └── ai_case.yaml #ai生成的测试用例 
+
+├── chat_ai.py # ai大模型
 
 └── .env # 环境变量配置
 
@@ -68,6 +84,8 @@ pip install pymysql
 pip install dotenv
 
 pip install requests
+
+pip install openai
 
 ```
 
@@ -111,7 +129,7 @@ http://localhost:63342/Project\_test\_flask/report/index.html?\_ijt=odn4kg6opjbv
 
 
 
-2026年9月
+2026年10月
 
 
 
