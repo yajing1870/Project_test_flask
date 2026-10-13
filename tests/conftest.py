@@ -1,21 +1,22 @@
 import pytest
-import requests
 import os
 import pymysql
 import yaml
 from dotenv import load_dotenv
-# 基础 URL，方便切换环境
-BASE_URL = "http://127.0.0.1:5000"
-
+from tests.api_client import ApiClient
+#打开文件
 def load_test_data():
-    with open("test_data.yaml","r",encoding="UTF-8")as f:
+    with open("data/test_data.yaml","r",encoding="UTF-8")as f:
         return yaml.safe_load(f)
+#从文件中获取到url
+base_url=load_test_data()["api"]["BASE_URL"]
 
 @pytest.fixture(scope="session")
 def api_url():
-    """返回 API 基础地址"""
-    return BASE_URL
-
+    #公用同一个url，用完后关闭
+    client=ApiClient(base_url)
+    yield client
+    client.close()
 
 @pytest.fixture(scope="function")
 def clean_books():
@@ -23,7 +24,7 @@ def clean_books():
     每个测试函数执行前，清空数据并插入干净的测试数据
     """
 
-    # 数据库配置
+    # 数据库配置。这里其实用不到了，因为已经用yaml来写测试数据了
     load_dotenv()  # 加载文件的意思
     db_config = {
         'host': os.getenv('DB_HOST', '127.0.0.1'),
@@ -34,9 +35,9 @@ def clean_books():
         'db': os.getenv('DB_NAME', 'book_db')
     }
 
-    data=load_test_data()#获取测试数据
+    data=load_test_data()["test_book"]#获取测试数据
 
-    # 连接数据库
+    # 连接数据库。
     conn=pymysql.connect(**db_config)
     cursor = conn.cursor()
 
@@ -45,7 +46,7 @@ def clean_books():
     # 重置自增 ID
     cursor.execute("ALTER TABLE books AUTO_INCREMENT = 1")
     # 插入yaml两条测试数据
-    for book in data["test_book"]:
+    for book in data:
         cursor.execute(
             "insert into books (title,author,stock,price) values (%s,%s,%s,%s)",
             (book["title"],book["author"],book["stock"],book["price"])
@@ -54,6 +55,14 @@ def clean_books():
     conn.commit()
     cursor.close()
     conn.close()
+
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,                          # 日志级别
+    format="%(asctime)s [%(levelname)s] %(message)s",  # 格式
+    datefmt="%Y-%m-%d %H:%M:%S"                  # 时间格式
+)
 
 #出过的问题：测试把原来数据全删了。
 # 有三种办法：

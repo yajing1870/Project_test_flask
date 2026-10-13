@@ -22,7 +22,9 @@ temps/
 report/
 *.html
 
-
+#测试数据
+temps/
+report/
 
 # 操作系统垃圾
 .DS_Store
